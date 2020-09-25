@@ -30,6 +30,7 @@ app.get('/', function(req, res) {
 
 // socket connection handling
 io.on('connection', (socket) => {
+  console.log('connection')
     socket.on('subscribeToTimer', (interval) => {
         console.log('socket is subscribing to timer with interval ', interval);
         setInterval(() => {
@@ -37,9 +38,19 @@ io.on('connection', (socket) => {
         }, interval);
     });
 
-    socket.on('message', (theMessage) => {
-        console.log(theMessage)
-        socket.broadcast.emit('message', theMessage)
+    socket.on('message', (theMessage, theName) => {
+        console.log(theMessage, theName)
+        let obj = {
+          'message': theMessage,
+          'name': theName,
+          'time': new Date()
+        }
+        console.log(obj)
+        socket.broadcast.emit('message', obj)
+    })
+
+    socket.on('welcome', () => {
+      console.log('welcome firing')
     })
 });
 
